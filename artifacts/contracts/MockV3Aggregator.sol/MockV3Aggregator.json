@@ -1,0 +1,99 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "MockV3Aggregator",
+  "sourceName": "contracts/MockV3Aggregator.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "_decimals",
+          "type": "uint8"
+        },
+        {
+          "internalType": "int256",
+          "name": "_initialAnswer",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "decimals",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "latestRoundData",
+      "outputs": [
+        {
+          "internalType": "uint80",
+          "name": "roundId",
+          "type": "uint80"
+        },
+        {
+          "internalType": "int256",
+          "name": "answer",
+          "type": "int256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "startedAt",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "updatedAt",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint80",
+          "name": "answeredInRound",
+          "type": "uint80"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "price",
+      "outputs": [
+        {
+          "internalType": "int256",
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "int256",
+          "name": "_price",
+          "type": "int256"
+        }
+      ],
+      "name": "updatePrice",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x60a0604052348015600f57600080fd5b506040516101b63803806101b6833981016040819052602c91603b565b60ff909116608052600055606d565b60008060408385031215604d57600080fd5b825160ff81168114605d57600080fd5b6020939093015192949293505050565b60805161012f6100876000396000604f015261012f6000f3fe6080604052348015600f57600080fd5b506004361060465760003560e01c8063313ce56714604b578063a035b1fe146088578063d4c19bda14609d578063feaf968c1460af575b600080fd5b60717f000000000000000000000000000000000000000000000000000000000000000081565b60405160ff90911681526020015b60405180910390f35b609060005481565b604051908152602001607f565b60ad60a836600460e1565b600055565b005b6000546040805160018082526020820193909352429181018290526060810191909152608081019190915260a001607f565b60006020828403121560f257600080fd5b503591905056fea26469706673582212204084896a2edd1d8d2ca2cd6a6a7624018ac6a9dc100de5678636dfd45bf3a01764736f6c634300081c0033",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060465760003560e01c8063313ce56714604b578063a035b1fe146088578063d4c19bda14609d578063feaf968c1460af575b600080fd5b60717f000000000000000000000000000000000000000000000000000000000000000081565b60405160ff90911681526020015b60405180910390f35b609060005481565b604051908152602001607f565b60ad60a836600460e1565b600055565b005b6000546040805160018082526020820193909352429181018290526060810191909152608081019190915260a001607f565b60006020828403121560f257600080fd5b503591905056fea26469706673582212204084896a2edd1d8d2ca2cd6a6a7624018ac6a9dc100de5678636dfd45bf3a01764736f6c634300081c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

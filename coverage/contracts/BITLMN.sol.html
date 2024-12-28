@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for contracts/BITLMN.sol</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">contracts/</a> BITLMN.sol
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>14/14</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">68.75% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>11/16</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>5/5</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>22/22</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22×</span>
+<span class="cline-any cline-yes">20×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.23;
+&nbsp;
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {ERC20Burnable} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+&nbsp;
+/**
+ * @title BITLMN
+ * @dev BITLMN token contract with initial supply distribution
+ */
+contract BITLMN is ERC20, ERC20Burnable, Ownable {
+    // Error for when the token transfer is locked
+    error TRANSFER_LOCKED();
+&nbsp;
+    /*//////////////////////////////////////////////////////////////
+                            STATE VARIABLES
+    //////////////////////////////////////////////////////////////*/
+&nbsp;
+    // Constants for initial token supply and reserves
+    uint256 public constant INITIAL_SUPPLY = 1_000_000_000; // 1 billion
+    uint256 public constant TOTAL_SUPPLY = INITIAL_SUPPLY * 10**18; // Including 18 decimals
+&nbsp;
+    // Reserves in tokens
+    uint256 public constant PRESALE_RESERVE = TOTAL_SUPPLY * 55 / 100;     // 55% - 550M
+    uint256 public constant MARKETING_RESERVE = TOTAL_SUPPLY * 12 / 100;    // 12% - 120M
+    uint256 public constant EXCHANGE_RESERVE = TOTAL_SUPPLY * 10 / 100;     // 10% - 100M
+    uint256 public constant REWARDS_RESERVE = TOTAL_SUPPLY * 18 / 100;      // 18% - 180M
+    uint256 public constant TEAM_RESERVE = TOTAL_SUPPLY * 5 / 100;         // 5% - 50M
+&nbsp;
+    // Reserve addresses
+    address public immutable PRESALE_ADDRESS;
+    address public immutable MARKETING_ADDRESS;
+    address public immutable EXCHANGE_ADDRESS;
+    address public immutable REWARDS_ADDRESS;
+    address public immutable TEAM_ADDRESS;
+&nbsp;
+    // Transfer lock status
+    bool public transferLocked;
+&nbsp;
+    /*//////////////////////////////////////////////////////////////
+                                EVENTS
+    //////////////////////////////////////////////////////////////*/
+    
+    event TransferLockUpdated(bool locked);
+&nbsp;
+    /*//////////////////////////////////////////////////////////////
+                            CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
+&nbsp;
+    /**
+     * @dev Constructor that mints initial reserves to specified addresses
+     * @param _presale Presale reserve address
+     * @param _marketing Marketing reserve address
+     * @param _exchange Exchange listings reserve address
+     * @param _rewards Rewards reserve address
+     * @param _team Team and advisors reserve address
+     */
+    constructor(
+        address _presale,
+        address _marketing,
+        address _exchange,
+        address _rewards,
+        address _team
+    ) ERC20("BITLMN", "BLMN") Ownable(msg.sender) {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(_presale != address(0), "Invalid presale address");
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(_marketing != address(0), "Invalid marketing address");
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(_exchange != address(0), "Invalid exchange address");
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(_rewards != address(0), "Invalid rewards address");
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(_team != address(0), "Invalid team address");
+&nbsp;
+        PRESALE_ADDRESS = _presale;
+        MARKETING_ADDRESS = _marketing;
+        EXCHANGE_ADDRESS = _exchange;
+        REWARDS_ADDRESS = _rewards;
+        TEAM_ADDRESS = _team;
+&nbsp;
+        // Mint initial token distribution
+        _mint(PRESALE_ADDRESS, PRESALE_RESERVE);
+        _mint(MARKETING_ADDRESS, MARKETING_RESERVE);
+        _mint(EXCHANGE_ADDRESS, EXCHANGE_RESERVE);
+        _mint(REWARDS_ADDRESS, REWARDS_RESERVE);
+        _mint(TEAM_ADDRESS, TEAM_RESERVE);
+&nbsp;
+        // Initially lock transfers
+        transferLocked = true;
+    }
+&nbsp;
+    /*//////////////////////////////////////////////////////////////
+                            MODIFIERS
+    //////////////////////////////////////////////////////////////*/
+&nbsp;
+    modifier whenTransferNotLocked() {
+        if (transferLocked) revert TRANSFER_LOCKED();
+        _;
+    }
+&nbsp;
+    /*//////////////////////////////////////////////////////////////
+                            ADMIN FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
+&nbsp;
+    /**
+     * @dev Sets the transfer lock status
+     * @param _locked New lock status
+     */
+    function setTransferLock(bool _locked) external onlyOwner {
+        transferLocked = _locked;
+        emit TransferLockUpdated(_locked);
+    }
+&nbsp;
+    /*//////////////////////////////////////////////////////////////
+                            OVERRIDES
+    //////////////////////////////////////////////////////////////*/
+&nbsp;
+    /**
+     * @dev Returns the number of decimals used to get its user representation.
+     */
+    function decimals() public pure override returns (uint8) {
+        return 18;
+    }
+&nbsp;
+    /**
+     * @dev Hook that is called before any transfer of tokens.
+     */
+    function _update(
+        address from,
+        address to,
+        uint256 amount
+    ) internal virtual override whenTransferNotLocked {
+        super._update(from, to, amount);
+    }
+}</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sat Oct 26 2024 10:06:29 GMT+0530 (GMT+05:30)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>
