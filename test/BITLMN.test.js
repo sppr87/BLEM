@@ -44,8 +44,8 @@ describe("BLMN Token", function () {
     describe("Deployment", function () {
         it("Should deploy with correct name and symbol", async function () {
             const { token } = await loadFixture(deployTokenFixture);
-            expect(await token.name()).to.equal("BLMN");
-            expect(await token.symbol()).to.equal("BLMN");
+            expect(await token.name()).to.equal("BLEM");
+            expect(await token.symbol()).to.equal("BLEM");
         });
 
         it("Should set the right owner", async function () {
@@ -94,65 +94,25 @@ describe("BLMN Token", function () {
         });
     });
 
-    describe("Transfer Lock", function () {
-        it("Should start with transfers locked", async function () {
-            const { token } = await loadFixture(deployTokenFixture);
-            expect(await token.transferLocked()).to.be.true;
-        });
-
-        it("Should allow owner to unlock transfers", async function () {
-            const { token, owner } = await loadFixture(deployTokenFixture);
-            await token.connect(owner).setTransferLock(false);
-            expect(await token.transferLocked()).to.be.false;
-        });
-
-        it("Should not allow non-owner to modify transfer lock", async function () {
-            const { token, user1 } = await loadFixture(deployTokenFixture);
-            await expect(token.connect(user1).setTransferLock(false))
-                .to.be.revertedWithCustomError(token, "OwnableUnauthorizedAccount")
-                .withArgs(user1.address);
-        });
-
-        it("Should emit TransferLockUpdated event", async function () {
-            const { token, owner } = await loadFixture(deployTokenFixture);
-            await expect(token.connect(owner).setTransferLock(false))
-                .to.emit(token, "TransferLockUpdated")
-                .withArgs(false);
-        });
-    });
-
     describe("Transfers", function () {
-        it("Should prevent transfers when locked", async function () {
+        it("Should allow transfers", async function () {
             const { token, presale, user1 } = await loadFixture(deployTokenFixture);
             const amount = ethers.parseEther("1000");
-            await expect(token.connect(presale).transfer(user1.address, amount))
-                .to.be.revertedWithCustomError(token, "BLMN_TransferLocked");
-        });
-
-        it("Should allow transfers when unlocked", async function () {
-            const { token, owner, presale, user1 } = await loadFixture(deployTokenFixture);
-            const amount = ethers.parseEther("1000");
-
-            await token.connect(owner).setTransferLock(false);
             await token.connect(presale).transfer(user1.address, amount);
             expect(await token.balanceOf(user1.address)).to.equal(amount);
         });
 
         it("Should handle multiple transfers correctly", async function () {
-            const { token, owner, presale, user1, user2 } = await loadFixture(deployTokenFixture);
+            const { token, presale, user1, user2 } = await loadFixture(deployTokenFixture);
             const amount = ethers.parseEther("1000");
-        
-            await token.connect(owner).setTransferLock(false);
             await token.connect(presale).transfer(user1.address, amount);
             await token.connect(user1).transfer(user2.address, amount / 2n);
-        
             expect(await token.balanceOf(user1.address)).to.equal(amount / 2n);
             expect(await token.balanceOf(user2.address)).to.equal(amount / 2n);
         });
 
         it("Should prevent transfers exceeding balance", async function () {
-            const { token, owner, user1, user2 } = await loadFixture(deployTokenFixture);
-            await token.connect(owner).setTransferLock(false);
+            const { token, user1, user2 } = await loadFixture(deployTokenFixture);
             const excessAmount = ethers.parseEther("1000000000000"); // More than total supply
             await expect(token.connect(user1).transfer(user2.address, excessAmount))
                 .to.be.reverted;
@@ -160,30 +120,18 @@ describe("BLMN Token", function () {
     });
 
     describe("Burning", function () {
-        it("Should allow token burning when unlocked", async function () {
-            const { token, owner, presale } = await loadFixture(deployTokenFixture);
+        it("Should allow token burning", async function () {
+            const { token, presale } = await loadFixture(deployTokenFixture);
             const burnAmount = ethers.parseEther("1000");
-
-            await token.connect(owner).setTransferLock(false);
             await expect(token.connect(presale).burn(burnAmount))
                 .to.changeTokenBalance(token, presale, -burnAmount);
         });
 
         it("Should update total supply after burning", async function () {
-            const { token, owner, presale, totalSupply } = await loadFixture(deployTokenFixture);
+            const { token, presale, totalSupply } = await loadFixture(deployTokenFixture);
             const burnAmount = ethers.parseEther("1000");
-
-            await token.connect(owner).setTransferLock(false);
             await token.connect(presale).burn(burnAmount);
             expect(await token.totalSupply()).to.equal(totalSupply - burnAmount);
-        });
-
-        it("Should prevent burning when locked", async function () {
-            const { token, presale } = await loadFixture(deployTokenFixture);
-            const burnAmount = ethers.parseEther("1000");
-            
-            await expect(token.connect(presale).burn(burnAmount))
-                .to.be.revertedWithCustomError(token, "BLMN_TransferLocked");
         });
     });
 });

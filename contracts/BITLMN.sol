@@ -14,7 +14,6 @@ contract BLMN is ERC20, ERC20Burnable, Ownable {
     /*//////////////////////////////////////////////////////////////
                                 ERRORS
     //////////////////////////////////////////////////////////////*/
-    error BLMN_TransferLocked();
     error BLMN_ZeroAddress();
 
     /*//////////////////////////////////////////////////////////////
@@ -37,14 +36,6 @@ contract BLMN is ERC20, ERC20Burnable, Ownable {
     address public immutable REWARDS_ADDRESS;
     address public immutable TEAM_ADDRESS;
     address public immutable BURN_ADDRESS;
-
-    // Transfer lock status
-    bool public transferLocked;
-
-    /*//////////////////////////////////////////////////////////////
-                                EVENTS
-    //////////////////////////////////////////////////////////////*/
-    event TransferLockUpdated(bool indexed locked);
 
     /*//////////////////////////////////////////////////////////////
                             CONSTRUCTOR
@@ -88,22 +79,6 @@ contract BLMN is ERC20, ERC20Burnable, Ownable {
         _mint(REWARDS_ADDRESS, (TOTAL_SUPPLY * REWARDS_BPS) / BPS);
         _mint(TEAM_ADDRESS, (TOTAL_SUPPLY * TEAM_BPS) / BPS);
 
-        // Initially lock transfers for security
-        transferLocked = true;
-        emit TransferLockUpdated(true);
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                            ADMIN FUNCTIONS
-    //////////////////////////////////////////////////////////////*/
-
-    /**
-     * @dev Enables or disables token transfers
-     * @param locked New lock status
-     */
-    function setTransferLock(bool locked) external onlyOwner {
-        transferLocked = locked;
-        emit TransferLockUpdated(locked);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -119,7 +94,6 @@ contract BLMN is ERC20, ERC20Burnable, Ownable {
         address to,
         uint256 amount
     ) internal virtual override {
-        if (transferLocked) revert BLMN_TransferLocked();
         super._update(from, to, amount);
     }
 }

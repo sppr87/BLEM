@@ -69,10 +69,44 @@ async function main() {
   await presale.setBlmnToken(token.target);
   console.log("Token address set in presale contract");
 
+  // Deploy Vesting Contract
+  console.log("\nDeploying BLMNVesting...");
+  const BLMNVesting = await hre.ethers.getContractFactory("BLMNVesting");
+  const vesting = await BLMNVesting.deploy(token.target);
+  await vesting.waitForDeployment();
+  console.log("BLMNVesting deployed to:", vesting.target);
+
+  // Transfer tokens to vesting contract before creating schedules
+  console.log("\nTransferring tokens to vesting contract...");
+  
+  // Get token instance with marketing signer and fund it with ETH
+  const marketingSigner = await ethers.getImpersonatedSigner(TOKEN_DISTRIBUTION.marketing.address);
+  await deployer.sendTransaction({
+    to: TOKEN_DISTRIBUTION.marketing.address,
+    value: ethers.parseEther("0.1") // Send some ETH for gas
+  });
+  
+  // Approve and transfer tokens to vesting contract
+  await token.connect(marketingSigner).approve(vesting.target, ethers.parseEther("120000000")); // 12% of total supply
+  await token.connect(marketingSigner).transfer(vesting.target, ethers.parseEther("120000000")); // 12% of total supply
+  
+  // Set up vesting schedules
+  console.log("\nSetting up vesting schedules...");
+  console.log("Creating Team schedule...");
+  await vesting.createTeamSchedule();
+  console.log("Creating Marketing schedule...");
+  await vesting.createMarketingSchedule();
+  console.log("Creating Rewards schedule...");
+  await vesting.createRewardsSchedule();
+  console.log("Creating Exchange schedule...");
+  await vesting.createExchangeSchedule();
+  console.log("All vesting schedules created successfully!");
+
   console.log("\nDeployment Summary:");
   console.log("-------------------");
   console.log("Presale Contract:", presale.target);
   console.log("Token Contract:", token.target);
+  console.log("Vesting Contract:", vesting.target);
   console.log("\nToken Distribution:");
   console.log("-------------------");
   Object.entries(TOKEN_DISTRIBUTION).forEach(([key, value]) => {
@@ -105,6 +139,14 @@ async function main() {
         TOKEN_DISTRIBUTION.team.address,
         TOKEN_DISTRIBUTION.burn.address
       ]
+    });
+
+    // Wait for 5 block confirmations for vesting contract
+    await vesting.deploymentTransaction().wait(5);
+
+    await hre.run("verify:verify", {
+      address: vesting.target,
+      constructorArguments: [token.target]
     });
   }
 }

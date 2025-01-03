@@ -4,7 +4,6 @@ pragma solidity 0.8.28;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
-import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 contract BLMNPresale is Ownable, ReentrancyGuard {
@@ -16,6 +15,8 @@ contract BLMNPresale is Ownable, ReentrancyGuard {
     error PRESALE_TokenNotSet();
     error PRESALE_NotActive();
     error PRESALE_TransferFailed();
+    error PRESALE_AlreadyStarted();
+    error PRESALE_TokensSold();
     error PRESALE_InsufficientBalance();
     error PRESALE_NoBalanceToWithdraw();
     error PRESALE_WithdrawFailed();
@@ -46,6 +47,7 @@ contract BLMNPresale is Ownable, ReentrancyGuard {
                             CONSTANTS
     //////////////////////////////////////////////////////////////*/
     uint256 private constant PRECISION = 1e18;
+    uint256 public constant CLAIM_DELAY = 24 hours;
 
     // Chainlink Price Feed addresses for different networks
     address private constant BASE_ETH_USD_FEED =
@@ -65,9 +67,11 @@ contract BLMNPresale is Ownable, ReentrancyGuard {
     uint256 public totalTokensSold;
     uint256 public totalUSDRaised;
     uint256 public totalEthRaised;
+    uint256 public totalClaimableETH;  // Track ETH reserved for refunds
 
-    bool public claimingEnabled;
     bool public presaleEnded;
+    uint256 public presaleEndTime;
+    bool public hasStarted;  // Track if presale has started
 
     mapping(uint256 => StageInfo) public stages;
     mapping(address => UserInfo) public userInfo;
@@ -84,7 +88,7 @@ contract BLMNPresale is Ownable, ReentrancyGuard {
     );
     event TokensClaimed(address indexed user, uint256 amount);
     event StageCreated(uint256 stageId, uint256 priceUSD);
-    event PresaleStatusUpdated(bool ended, bool claimingEnabled);
+    event PresaleEnded(uint256 endTime);
     event RefundIssued(address indexed user, uint256 amount);
 
     /*//////////////////////////////////////////////////////////////
@@ -95,8 +99,9 @@ contract BLMNPresale is Ownable, ReentrancyGuard {
         _;
     }
 
-    modifier whenClaimingEnabled() {
-        if (!claimingEnabled) revert PRESALE_ClaimingNotEnabled();
+    modifier whenClaimingAllowed() {
+        if (!presaleEnded) revert PRESALE_NotActive();
+        if (block.timestamp < presaleEndTime + CLAIM_DELAY) revert PRESALE_ClaimingNotEnabled();
         _;
     }
 
@@ -185,6 +190,8 @@ contract BLMNPresale is Ownable, ReentrancyGuard {
         totalTokensSold += tokenAmount;
         totalUSDRaised += usdCost;
         totalEthRaised += ethRequired;
+        totalClaimableETH += ethRequired;  // Track claimable ETH
+        hasStarted = true;  // Mark presale as started
 
         // Update user info
         UserInfo storage user = userInfo[msg.sender];
@@ -210,7 +217,7 @@ contract BLMNPresale is Ownable, ReentrancyGuard {
         );
     }
 
-    function claimTokens() external nonReentrant whenClaimingEnabled {
+    function claimTokens() external nonReentrant whenClaimingAllowed {
         UserInfo storage user = userInfo[msg.sender];
         if (user.tokenAmount == 0 || user.claimed) revert PRESALE_AlreadyClaimed();
 
@@ -238,6 +245,7 @@ contract BLMNPresale is Ownable, ReentrancyGuard {
         user.claimed = true;
         user.tokenAmount = 0;
         user.ethContributed = 0;
+        totalClaimableETH -= refundAmount;  // Reduce claimable ETH
 
         // Process refund
         (bool success, ) = payable(msg.sender).call{value: refundAmount}("");
@@ -251,20 +259,23 @@ contract BLMNPresale is Ownable, ReentrancyGuard {
     //////////////////////////////////////////////////////////////*/
     function setBlmnToken(address _token) external onlyOwner {
         if (_token == address(0)) revert PRESALE_TokenNotSet();
+        if (hasStarted) revert PRESALE_AlreadyStarted();  // Cannot change token after presale starts
+        if (totalTokensSold > 0) revert PRESALE_TokensSold();  // Cannot change if tokens sold
         blmnToken = IERC20(_token);
     }
 
-    function updatePresaleStatus(bool ended, bool enableClaiming) external onlyOwner {
-        presaleEnded = ended;
-        claimingEnabled = enableClaiming;
-        emit PresaleStatusUpdated(ended, enableClaiming);
+    function endPresale() external onlyOwner {
+        presaleEnded = true;
+        presaleEndTime = block.timestamp;
+        emit PresaleEnded(presaleEndTime);
     }
 
     function withdrawETH() external onlyOwner {
         uint256 balance = address(this).balance;
-        if (balance == 0) revert PRESALE_NoBalanceToWithdraw();
+        if (balance <= totalClaimableETH) revert PRESALE_NoBalanceToWithdraw();  // Cannot withdraw claimable ETH
 
-        (bool success, ) = payable(owner()).call{value: balance}("");
+        uint256 withdrawableAmount = balance - totalClaimableETH;  // Only withdraw excess
+        (bool success, ) = payable(owner()).call{value: withdrawableAmount}("");
         if (!success) revert PRESALE_WithdrawFailed();
     }
 
@@ -332,7 +343,7 @@ contract BLMNPresale is Ownable, ReentrancyGuard {
         bool isPresaleEnded
     ) {
         isActive = stages[currentStageId].active && !presaleEnded;
-        isClaimingEnabled = claimingEnabled;
+        isClaimingEnabled = presaleEnded && block.timestamp >= presaleEndTime + CLAIM_DELAY;
         isPresaleEnded = presaleEnded;
     }
 

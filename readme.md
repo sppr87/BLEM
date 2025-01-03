@@ -4,6 +4,10 @@ This repository contains smart contracts for the BITLMN token and its presale im
 
 ## Table of Contents
 - [Overview](#overview)
+  - [BITLMN Token Distribution](#bitlmn-token-distribution)
+  - [Token Vesting](#token-vesting)
+    - [Vesting Schedules](#vesting-schedules)
+    - [Interacting with Vesting](#interacting-with-vesting)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Deployment](#deployment)
@@ -23,6 +27,62 @@ This repository contains smart contracts for the BITLMN token and its presale im
 - Exchange Listings: 100,000,000 BLMN (10%)
 - Rewards: 180,000,000 BLMN (18%)
 - Team & Advisors: 50,000,000 BLMN (5%)
+
+### Token Vesting
+The project implements a comprehensive vesting system for different token allocations through the BLMNVesting contract. Each allocation has its own vesting schedule designed to ensure long-term project sustainability.
+
+#### Vesting Schedules
+
+1. Team & Advisors (5% - 50,000,000 BLMN)
+   - 12 months cliff period
+   - 24 months linear vesting after cliff
+   - No initial unlock
+
+2. Marketing (12% - 120,000,000 BLMN)
+   - No cliff period
+   - 18 months linear vesting
+   - 20% initial unlock at schedule creation
+
+3. Rewards (18% - 180,000,000 BLMN)
+   - Special vesting structure:
+   - First 6 months: Linear release of initial 10%
+   - Remaining 30 months: Linear release of remaining 90%
+   - Total vesting period: 36 months
+
+4. Exchange Listings (10% - 100,000,000 BLMN)
+   - 6 months cliff period
+   - Instant unlock after cliff period
+   - No initial unlock
+
+#### Interacting with Vesting
+
+1. Creating Vesting Schedules
+```javascript
+// Only owner can create schedules
+await vestingContract.createTeamSchedule();
+await vestingContract.createMarketingSchedule();
+await vestingContract.createRewardsSchedule();
+await vestingContract.createExchangeSchedule();
+```
+
+2. Checking Vesting Status
+```javascript
+// Get schedule information
+const teamSchedule = await vestingContract.getVestingSchedule(
+    await vestingContract.TEAM_SCHEDULE()
+);
+
+// Calculate releasable amount
+const releasable = await vestingContract.calculateReleasableAmount(
+    await vestingContract.TEAM_SCHEDULE()
+);
+```
+
+3. Releasing Vested Tokens
+```javascript
+// Release available tokens for a schedule
+await vestingContract.release(await vestingContract.TEAM_SCHEDULE());
+```
 
 ### Presale Stages
 1. Seed Stage
@@ -71,10 +131,12 @@ npx hardhat run scripts/deploy-all.js --network base
 The deployment script will:
 1. Deploy the BITLMN token contract
 2. Deploy the presale contract
-3. Configure the presale contract with the token address
-4. Transfer presale tokens to the presale contract
-5. Verify both contracts on BaseScan
-6. Save deployment information to `deployment-info.json`
+3. Deploy the vesting contract
+4. Configure the presale contract with the token address
+5. Configure the vesting contract with the token address
+6. Transfer tokens to the presale and vesting contracts
+7. Verify all contracts on BaseScan
+8. Save deployment information to `deployment-info.json`
 
 ## Contract Management
 
